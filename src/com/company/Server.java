@@ -2,8 +2,7 @@ package com.company;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
+import java.awt.event.*;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.net.ServerSocket;
@@ -20,6 +19,8 @@ public class Server extends JFrame {
     static Socket sc;
     static DataInputStream din;
     static DataOutputStream dout;
+
+    boolean isTyping;
 
     Server(){
 
@@ -62,6 +63,17 @@ public class Server extends JFrame {
         active1.setBounds(110,30,100,20);
         p1.add(active1);
 
+        Timer t = new Timer(1, new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if(!isTyping){
+                    active1.setText("Active now");
+                }
+            }
+        });
+
+        t.setInitialDelay(2000);
+
         ImageIcon call1 = new ImageIcon(ClassLoader.getSystemResource("com/company/Icons/call.png"));
         Image call2 = call1.getImage().getScaledInstance(25,25, Image.SCALE_DEFAULT);
         ImageIcon call3 = new ImageIcon(call2);
@@ -87,6 +99,23 @@ public class Server extends JFrame {
         t1.setBounds(6,510,330,33);
         t1.setFont(new Font("SAN_SERIF", Font.PLAIN, 12));
         add(t1);
+
+        t1.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyPressed(KeyEvent e) {
+                active1.setText("Typing...");
+                t.stop();
+                isTyping = true;
+            }
+
+            @Override
+            public void keyReleased(KeyEvent e) {
+                isTyping = false;
+                if (!t.isRunning()){
+                    t.start();
+                }
+            }
+        });
 
         b1 = new JButton();
         b1.setBounds(345, 510, 50, 33);
